@@ -1,69 +1,46 @@
-	.file	"sort.c"
-	.text
-	.p2align 4,,15
-	.globl	bubble_sort
-	.def	bubble_sort;	.scl	2;	.type	32;	.endef
-	.seh_proc	bubble_sort
-bubble_sort:
-	pushq	%rbp
-	.seh_pushreg	%rbp
-	pushq	%rdi
-	.seh_pushreg	%rdi
-	pushq	%rsi
-	.seh_pushreg	%rsi
-	pushq	%rbx
-	.seh_pushreg	%rbx
-	.seh_endprologue
-	xorl	%ebp, %ebp
-	xorl	%edi, %edi
-	movq	(%rcx), %rsi
-	testq	%rsi, %rsi
-	je	.L1
-	.p2align 4,,10
-.L2:
-	leaq	-1(%rsi), %rax
-	cmpq	%rax, %rdi
-	je	.L7
-	movq	8(%rcx), %rbx
-	xorl	%edx, %edx
-	xorl	%eax, %eax
-	notq	%rdi
-	.p2align 4,,10
-.L4:
-	leaq	(%rbx,%rax,8), %r10
-	leal	1(%rdx), %eax
-	movq	(%r10), %r9
-	leaq	(%rbx,%rax,8), %r8
-	movq	%rax, %rdx
-	movq	(%r8), %r11
-	cmpq	%r11, %r9
-	jle	.L5
-	movq	%r11, (%r10)
-	movq	%r9, (%r8)
-	movq	(%rcx), %rsi
-	leaq	(%rdi,%rsi), %r8
-	cmpq	%r8, %rax
-	jb	.L4
+bubble_sort(ll_array_t*):
+        push    r12
+        push    rbp
+        push    rbx
+        mov     rbp, QWORD PTR [rdi]
+        test    rbp, rbp
+        je      .L1
+        mov     r12, rdi
+        lea     rbx, [rbp-1]
+        xor     r11d, r11d
+        xor     eax, eax
 .L7:
-	leal	1(%rbp), %edi
-	cmpq	%rsi, %rdi
-	movq	%rdi, %rbp
-	jb	.L2
+        mov     r10, rbx
+        sub     r10, rax
+        je      .L3
+        mov     r8, QWORD PTR [r12+8]
+        xor     edx, edx
+        xor     eax, eax
+        mov     rdi, QWORD PTR [r8]
+        jmp     .L4
+.L15:
+        mov     QWORD PTR [r8+r9*8], rcx
+        mov     QWORD PTR [rsi], rdi
+        cmp     rax, r10
+        jnb     .L3
+.L4:
+        add     edx, 1
+        mov     r9, rax
+        mov     eax, edx
+        lea     rsi, [r8+rax*8]
+        mov     rcx, QWORD PTR [rsi]
+        cmp     rcx, rdi
+        jl      .L15
+        mov     rdi, rcx
+        cmp     rax, r10
+        jb      .L4
+.L3:
+        lea     eax, [r11+1]
+        mov     r11, rax
+        cmp     rax, rbp
+        jb      .L7
 .L1:
-	popq	%rbx
-	popq	%rsi
-	popq	%rdi
-	popq	%rbp
-	ret
-	.p2align 4,,10
-.L5:
-	leaq	(%rdi,%rsi), %r8
-	cmpq	%r8, %rax
-	jb	.L4
-	leal	1(%rbp), %edi
-	cmpq	%rsi, %rdi
-	movq	%rdi, %rbp
-	jb	.L2
-	jmp	.L1
-	.seh_endproc
-	.ident	"GCC: (x86_64-posix-seh-rev0, Built by MinGW-W64 project) 8.1.0"
+        pop     rbx
+        pop     rbp
+        pop     r12
+        ret
