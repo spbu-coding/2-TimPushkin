@@ -4,6 +4,7 @@
 
 #include "error_handle.h"
 #include "ll_array.h"
+#include "sort.h"
 
 #define MAX_INPUT_INTS_NUM 100
 #define FRST_PARAM_LEN 7
@@ -16,8 +17,6 @@ struct main_params_t {
     long long to;
 };
 
-void bubble_sort(struct ll_array_t*);
-
 int parse_main_params(struct main_params_t* const main_params_container, const int* const argc, const char* const* const argv) {
     if (*argc < 2) {
         return -1;
@@ -25,6 +24,8 @@ int parse_main_params(struct main_params_t* const main_params_container, const i
     if (*argc > 3) {
         return -2;
     }
+    main_params_container->from_count = 0;
+    main_params_container->to_count = 0;
     for (unsigned int i = 1; i < (unsigned int) *argc; i++) {
         if (strncmp(argv[i], "--from=", FRST_PARAM_LEN) == 0) {
             main_params_container->from_count++;
@@ -86,7 +87,7 @@ struct ll_array_t parse_num_str(const struct main_params_t* const main_params) {
 }
 
 int main(const int argc, const char* const* const argv) {
-    struct main_params_t main_params = {0, 0, 0, 0};
+    struct main_params_t main_params;
     int return_code = parse_main_params(&main_params, &argc, argv);
     if (return_code != 0) {
         return return_code;
