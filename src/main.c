@@ -67,7 +67,7 @@ struct ll_array_t parse_num_str(const struct main_params_t* const main_params) {
         }
     }
     for (unsigned int i = 0; i < nums_to_stdout.len; i++) {
-        if (printf("%lli ", nums_to_stdout.elems[i]) < 0) {
+        if (fprintf(stdout, "%lli ", nums_to_stdout.elems[i]) < 0) {
             free(array_to_fill.elems);
             error_handle("Printing nums to stdout failed");
         }
