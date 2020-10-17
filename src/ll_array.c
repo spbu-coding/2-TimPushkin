@@ -16,11 +16,7 @@ struct ll_array_t copy_ll_array(const struct ll_array_t* const ll_array_to_copy)
 
 unsigned int find_ll_arrays_diff(const struct ll_array_t* const array1, const struct ll_array_t* const array2) {
     size_t min_array_len;
-    if (array1->len <= array2->len) {
-        min_array_len = array1->len;
-    } else {
-        min_array_len = array2->len;
-    }
+    min_array_len = (array1->len <= array2->len)? array1->len : array2->len;
     unsigned int diff_nums_count = 0;
     for (unsigned int i = 0; i < min_array_len; i++) {
         if (array1->elems[i] != array2->elems[i]) {

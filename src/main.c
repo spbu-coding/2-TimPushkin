@@ -45,6 +45,7 @@ int parse_main_params(struct main_params_t* const main_params_container, const i
 
 struct ll_array_t parse_num_str(const struct main_params_t* const main_params) {
     struct ll_array_t array_to_fill = {0, (long long*) malloc(MAX_INPUT_INTS_NUM * sizeof(long long))};
+    struct temp_ll_array_t nums_to_stdout = {0}, nums_to_stderr = {0};
     if (array_to_fill.elems == NULL) {
         error_handle("Allocating memory for num array failed");
     }
@@ -56,19 +57,25 @@ struct ll_array_t parse_num_str(const struct main_params_t* const main_params) {
             error_handle("Reading nums from stdin failed");
         }
         if (main_params->from_count > 0 && cur_num <= main_params->from) {
-            if (printf("%lli ", cur_num) < 0) {
-                free(array_to_fill.elems);
-                error_handle("Printing nums to stdout failed");
-            }
+            nums_to_stdout.elems[nums_to_stdout.len++] = cur_num;
         }
         if (main_params->to_count > 0 && cur_num >= main_params->to) {
-            if (fprintf(stderr, "%lli ", cur_num) < 0) {
-                free(array_to_fill.elems);
-                error_handle("Printing nums to stderr failed");
-            }
+            nums_to_stderr.elems[nums_to_stderr.len++] = cur_num;
         }
         if ((main_params->from_count == 0 || cur_num > main_params->from) && (main_params->to_count == 0 || cur_num < main_params->to)) {
             array_to_fill.elems[array_to_fill.len++] = cur_num;
+        }
+    }
+    for (unsigned int i = 0; i < nums_to_stdout.len; i++) {
+        if (printf("%lli ", nums_to_stdout.elems[i]) < 0) {
+            free(array_to_fill.elems);
+            error_handle("Printing nums to stdout failed");
+        }
+    }
+    for (unsigned int i = 0; i < nums_to_stderr.len; i++) {
+        if (fprintf(stderr, "%lli ", nums_to_stderr.elems[i]) < 0) {
+            free(array_to_fill.elems);
+            error_handle("Printing nums to stderr failed");
         }
     }
     if (array_to_fill.len == 0) {
